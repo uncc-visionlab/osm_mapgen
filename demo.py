@@ -15,7 +15,7 @@ import modelgen
 # ansys_home = [40.273726, -80.168269]
 # uncc_practice_field = [35.312504, -80.739100]
 uncc_epic = [35.309925, -80.740539]
-terrain_radius = 5000
+terrain_radius = 1500
 # 80467.2m = 100mph*30min
 ###############################################################################
 # Generate map and import

@@ -261,6 +261,7 @@ class RoadPrep(object):
         # convert each edge into a line
         count = 0
         last_displayed = -1
+        base_circle = pv.Circle(road_width, resolution=16).delaunay_2d()
         for _, row in edges.iterrows():
             count += 1
             num_percent_bins = 40
@@ -306,9 +307,11 @@ class RoadPrep(object):
                 line += pv.lines_from_points(pts, close=True)
             except ValueError:
                 pass
-            end_shape = pv.Circle(road_width, resolution=16).delaunay_2d()
+            # end_shape = pv.Circle(road_width, resolution=4).delaunay_2d()
+            end_shape = base_circle.copy()
             road_ends += end_shape.translate(pts[0], inplace=False)
-            end_shape = pv.Circle(road_width, resolution=16).delaunay_2d()
+            # end_shape = pv.Circle(road_width, resolution=4).delaunay_2d()
+            end_shape = base_circle.copy()
             road_ends += end_shape.translate(pts[-1], inplace=False)
             lines.append(line)
 

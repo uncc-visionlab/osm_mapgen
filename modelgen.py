@@ -26,7 +26,7 @@ class ModelGenerator(object):
             terrain_radius=500,
             include_osm_buildings=True,
             including_osm_roads=True,
-            import_in_aedt=True,
+            import_in_aedt=False,
             plot_before_importing=False,
             z_offset=2,
             road_step=3,
@@ -127,42 +127,4 @@ class ModelGenerator(object):
             json.dump(scene, f, indent=4)
 
         self.logger.info("Done...")
-        if plot_before_importing:
-            import pyvista as pv
-
-            self.logger.info("Viewing Geometry...")
-            # view results
-            plt = pv.Plotter()
-            if building_mesh:
-                plt.add_mesh(building_mesh, cmap="gray", label=r"Buildings")
-            if road_mesh:
-                plt.add_mesh(road_mesh, cmap="bone", label=r"Roads")
-            if terrain_mesh:
-                plt.add_mesh(terrain_mesh, cmap="terrain", label=r"Terrain")  # clim=[00, 100]
-            plt.add_legend()
-            plt.add_axes(line_width=2, xlabel="X", ylabel="Y", zlabel="Z")
-            plt.add_axes_at_origin(x_color=None, y_color=None, z_color=None, line_width=2, labels_off=True)
-            plt.show(interactive=True)
-
-        if import_in_aedt:
-            self.model_units = "meter"
-            for part in parts_dict:
-                obj_names = [i for i in self.object_names]
-                self.import_3d_cad(
-                    parts_dict[part]["file_name"],
-                    create_lightweigth_part=create_lightweigth_part,
-                )
-                added_objs = [i for i in self.object_names if i not in obj_names]
-                if part == "terrain":
-                    transparency = 0.2
-                    color = [0, 125, 0]
-                elif part == "buildings":
-                    transparency = 0.6
-                    color = [0, 0, 255]
-                else:
-                    transparency = 0.0
-                    color = [40, 40, 40]
-                for obj in added_objs:
-                    self[obj].transparency = transparency
-                    self[obj].color = color
         return scene
