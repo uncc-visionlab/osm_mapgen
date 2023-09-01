@@ -32,6 +32,7 @@ class ModelGenerator(object):
             road_step=3,
             road_width=8,
             create_lightweigth_part=True,
+            save_nodes=False,
     ):
         """Import OpenStreet Maps into AEDT.
 
@@ -103,6 +104,7 @@ class ModelGenerator(object):
                 z_offset=z_offset,
                 road_step=road_step,
                 road_width=road_width,
+                save_nodes=save_nodes,
             )
 
             road_stl = road_geo["file_name"]

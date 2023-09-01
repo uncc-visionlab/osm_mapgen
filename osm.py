@@ -15,7 +15,6 @@ import osmnx as ox
 from srtm import main as srtm
 import utm
 
-from demo import save_road_nodes
 from utils import write_road_nodes_to_file
 
 class BuildingsPrep(object):
@@ -223,7 +222,7 @@ class RoadPrep(object):
     def __init__(self, cad_path):
         self.cad_path = cad_path
 
-    def create_roads(self, center_lat_lon, terrain_mesh, max_radius=1000, z_offset=0, road_step=10, road_width=5):
+    def create_roads(self, center_lat_lon, terrain_mesh, max_radius=1000, z_offset=0, road_step=10, road_width=5, save_nodes=False):
         """Generate the road stl file.
 
         Parameters
@@ -240,6 +239,7 @@ class RoadPrep(object):
             Road computation steps in meters.
         road_width : float, optional
             Road width in meter.
+        save_nodes: save road nodes to disk.
 
         Returns
         -------
@@ -316,7 +316,7 @@ class RoadPrep(object):
             except ValueError:
                 pass
             # Saving the road nodes for shortest path planning
-            if save_road_nodes:
+            if save_nodes:
                 file = open("road_nodes.txt", "a")
                 write_road_nodes_to_file(file, pts)
                 file.close()

@@ -24,13 +24,15 @@ terrain_radius = 250
 modeler = modelgen.ModelGenerator(None)
 # Saving the road nodes for shortest path planning
 save_road_nodes = False
-file = open("road_nodes.txt", "w")
-file.close()
+if save_road_nodes:
+    file = open("road_nodes.txt", "w")
+    file.close()
 modeler.import_from_openstreet_map(uncc_epic,
                            terrain_radius=terrain_radius,
                            road_step=100,
                            plot_before_importing=False,
                             include_osm_buildings=True,
                             including_osm_roads=True,
-                           import_in_aedt=True)
+                           import_in_aedt=True,
+                           save_nodes=save_road_nodes)
 
