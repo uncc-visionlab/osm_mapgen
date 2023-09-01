@@ -15,6 +15,8 @@ import osmnx as ox
 from srtm import main as srtm
 import utm
 
+from demo import save_road_nodes
+from utils import write_road_nodes_to_file
 
 class BuildingsPrep(object):
     """Contains all basic functions needed to generate buildings stl files."""
@@ -67,6 +69,11 @@ class BuildingsPrep(object):
         polygonPolyDataFiltered = triFilter.GetOutput()
         roof = pv.PolyData(polygonPolyDataFiltered)
         return roof
+
+    @staticmethod
+    def flip_roof_normals(polydata):
+        if polydata.face_normals.min() < 0:
+            polydata.flip_normals()
 
     def generate_buildings(self, center_lat_lon, terrain_mesh, max_radius=500):
         """Generate the buildings stl file.
@@ -177,9 +184,10 @@ class BuildingsPrep(object):
 
                     # create closed and filled polygon from outline of building
                     roof = self.create_building_roof(points)
+                    self.flip_roof_normals(roof)
                     if str(h).endswith('\''):
                         h = h[:-1]
-                        h = float(h)*0.3048
+                        h = float(h) * 0.3048
                         h = str(h)
                     if not np.isnan(float(h)):
                         extrude_h = float(h) * 2
@@ -262,7 +270,7 @@ class RoadPrep(object):
         count = 0
         last_displayed = -1
         base_circle = pv.Circle(road_width, resolution=16).delaunay_2d()
-        for _, row in edges.iterrows():
+        for _, row in edges.iterrows():  # edges are the road graph
             count += 1
             num_percent_bins = 40
 
@@ -277,7 +285,7 @@ class RoadPrep(object):
                 i = percent_symbol2 + percent_symbol1 + " " + str(percent) + "% "
                 logger.info(f"\rPercent Complete:{i}")
 
-            x_pts = row["geometry"].xy[0]
+            x_pts = row["geometry"].xy[0]  # coordinates of the road network
             y_pts = row["geometry"].xy[1]
             z_pts = np.empty(len(x_pts))
             z_pts.fill(start_z + z_offset)
@@ -307,6 +315,11 @@ class RoadPrep(object):
                 line += pv.lines_from_points(pts, close=True)
             except ValueError:
                 pass
+            # Saving the road nodes for shortest path planning
+            if save_road_nodes:
+                file = open("road_nodes.txt", "a")
+                write_road_nodes_to_file(file, pts)
+                file.close()
             # end_shape = pv.Circle(road_width, resolution=4).delaunay_2d()
             end_shape = base_circle.copy()
             road_ends += end_shape.translate(pts[0], inplace=False)
