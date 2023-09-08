@@ -111,7 +111,7 @@ class BuildingsPrep(object):
             temp = [levels, height]
             geo = geo.array
 
-            building_meshes = pv.PolyData()  # empty location where all building meshses are stored
+            building_meshes = pv.PolyData()  # empty location where all building meshes are stored
 
             logger.info("\nGenerating Buildings")
             last_displayed = -1
@@ -190,7 +190,7 @@ class BuildingsPrep(object):
 
                     outline = pv.lines_from_points(points, close=True)
 
-                    vert_walls = outline.extrude([0, 0, extrude_h + delta_elevation], inplace=False)
+                    vert_walls = outline.extrude([0, 0, extrude_h + delta_elevation], inplace=False, capping=True)
 
                     roof_location = np.array([0, 0, extrude_h + delta_elevation])
                     roof.translate(roof_location, inplace=True)
@@ -205,7 +205,6 @@ class BuildingsPrep(object):
             # file_out = self.cad_path + "\\buildings.stl"
             file_out = self.cad_path + "/buildings.stl"
             building_meshes.save(file_out, binary=True)
-
             return {"file_name": file_out, "mesh": building_meshes, "temp": temp}
 
 

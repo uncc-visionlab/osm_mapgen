@@ -15,7 +15,7 @@ import modelgen
 # ansys_home = [40.273726, -80.168269]
 # uncc_practice_field = [35.312504, -80.739100]
 uncc_epic = [35.309925, -80.740539]
-terrain_radius = 1500
+terrain_radius = 500
 # 80467.2m = 100mph*30min
 ###############################################################################
 # Generate map and import
@@ -24,7 +24,7 @@ terrain_radius = 1500
 modeler = modelgen.ModelGenerator(None)
 modeler.import_from_openstreet_map(uncc_epic,
                            terrain_radius=terrain_radius,
-                           road_step=100,
+                           road_step=200,
                            plot_before_importing=False,
                            import_in_aedt=True)
 
